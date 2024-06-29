@@ -1,4 +1,8 @@
+#=========修改修改成自己的项目地址，这个使用的是绝对路径=====
 project_dir=/Users/putao/code/test/c/free-rtos-riscv
+#=========
+
+
 RISCV_PROJECT = ${project_dir}/RISC-V_RV32_QEMU_VIRT_GCC/build/gcc
 
 OUTPUT_DIR :=${RISCV_PROJECT}/output
