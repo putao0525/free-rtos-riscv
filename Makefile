@@ -2,9 +2,11 @@
 project_dir=/Users/putao/code/test/c/free-rtos-riscv
 #=========
 
-
 RISCV_PROJECT = ${project_dir}/RISC-V_RV32_QEMU_VIRT_GCC
 OUTPUT_DIR :=${project_dir}/build
+# 创建输出目录
+$(OUTPUT_DIR):
+	mkdir -p $(OUTPUT_DIR)
 
 IMAGE := RTOSDemo.elf
 
@@ -143,7 +145,7 @@ DEP_FILES := $(SOURCE_FILES:%.c=$(OUTPUT_DIR)/%.d) $(ASM_SOURCE_FILES:%.S=$(OUTP
 DEP_FILES_NO_PATH = $(notdir $(DEP_FILES))
 DEP_OUTPUT = $(DEP_FILES_NO_PATH:%.d=$(OUTPUT_DIR)/%.d)
 
-all: $(OUTPUT_DIR)/$(IMAGE)
+all: $(OUTPUT_DIR) $(OUTPUT_DIR)/$(IMAGE)
 run:all
 	qemu-system-riscv32 -machine virt -kernel ${OUTPUT_DIR}/RTOSDemo.elf -serial mon:stdio -nographic -bios none
 %.o : %.c
