@@ -195,6 +195,7 @@ definitions. */
  * [chip specific registers go here]
  * pxCode
  */
+// 函数负责初始化任务的堆栈，设置任务的初始上下文（寄存器状态）
 pxPortInitialiseStack:
     csrr t0, mstatus                    /* Obtain current mstatus value. */
     andi t0, t0, ~0x8                   /* Ensure interrupts are disabled when the stack is restored within an ISR.  Required when a task is created after the schedulre has been started, otherwise interrupts would be disabled anyway. */
@@ -228,7 +229,8 @@ chip_specific_stack_frame:              /* First add any chip specific registers
     store_x a1, 0(a0)                   /* mret value (pxCode parameter) onto the stack. */
     ret
 /*-----------------------------------------------------------*/
-
+//xPortStartFirstTask 函数负责启动第一个任务。
+// 它从当前任务控制块（TCB）中加载任务的堆栈指针，并恢复任务的上下文。
 xPortStartFirstTask:
     load_x  sp, pxCurrentTCB            /* Load pxCurrentTCB. */
     load_x  sp, 0( sp )                 /* Read sp from first TCB member. */
@@ -316,6 +318,7 @@ freertos_risc_v_interrupt_handler:
 /*-----------------------------------------------------------*/
 
 .section .text.freertos_risc_v_mtimer_interrupt_handler
+
 freertos_risc_v_mtimer_interrupt_handler:
     portcontextSAVE_INTERRUPT_CONTEXT
     portUPDATE_MTIMER_COMPARE_REGISTER
@@ -325,7 +328,7 @@ freertos_risc_v_mtimer_interrupt_handler:
 exit_without_context_switch:
     portcontextRESTORE_CONTEXT
 /*-----------------------------------------------------------*/
-
+//reertos_risc_v_trap_handler 是一个通用的陷阱处理程序，用于处理所有的异常和中断。它首先保存当前任务的上下文，然后决定是处理中断还是异常，最后根据需要恢复上下文并进行任务切换。
 .section .text.freertos_risc_v_trap_handler
 .align 8
 freertos_risc_v_trap_handler:
